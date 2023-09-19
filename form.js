@@ -1,21 +1,22 @@
 const form = document.createElement('form');
 
-const emailInput = document.createElement('input');
-emailInput.setAttribute('type', 'email');
-emailInput.setAttribute('name', 'email');
-emailInput.setAttribute('placeholder', 'Email');
+const inputFields = [
+    { type: 'email', name: 'email', palaceholder: 'Email' },
+    { type: 'password', name: 'password', palaceholder: 'Password' }
+];
 
-const passwordInput = document.createElement('input');
-passwordInput.setAttribute('type', 'password');
-passwordInput.setAttribute('name', 'password');
-passwordInput.setAttribute('placeholder', 'Password');
+inputFields.forEach(field => {
+    let input = document.createElement('input');
+    input.setAttribute('type', field.type);
+    input.setAttribute('name', field.name);
+    input.setAttribute('placeholder', field.palaceholder);
+    form.appendChild(input);
+});
+
 
 const submitButton = document.createElement('button');
 submitButton.setAttribute('type', 'submit');
 submitButton.textContent = 'Submit';
-
-form.appendChild(emailInput);
-form.appendChild(passwordInput);
 form.appendChild(submitButton);
 
 const rootDiv = document.getElementById('root');
