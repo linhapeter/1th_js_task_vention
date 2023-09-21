@@ -1,19 +1,21 @@
-function createElement(tag, attributes = {}) {
-    const element = document.createElement(tag);
+const createNewElement = (tag) => {
+    return document.createElement(tag);
+};
+
+
+const setAttributesForElement = (element, attributes = {}) => {
     for (const key in attributes) {
         element.setAttribute(key, attributes[key]);
     }
-    console.log(element);
-    return element;
-}
+};
 
 
-function appendChildToParent(parent, child) {
+const appendChildToParent = (parent, child) => {
     parent.appendChild(child);
-}
+};
 
 
-const form = createElement('form');
+const form = createNewElement('form');
 
 
 const inputFields = [
@@ -23,12 +25,14 @@ const inputFields = [
 
 
 inputFields.forEach(field => {
-    const input = createElement('input', { type: field.type, name: field.name, placeholder: field.placeholder });
+    const input = createNewElement('input');
+    setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
     appendChildToParent(form, input);
 });
 
 
-const submitButton = createElement('button', { type: 'submit' });
+const submitButton = createNewElement('button');
+setAttributesForElement(submitButton, { type: 'submit' });
 submitButton.textContent = 'Submit';
 appendChildToParent(form, submitButton);
 
