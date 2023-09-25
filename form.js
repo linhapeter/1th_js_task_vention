@@ -28,6 +28,7 @@ const inputFields = [
 
 const submitForm = async e => {
     e.preventDefault();
+    if (!validateForm()) return;
 
 
     const emailInput = form.querySelector('input[name="email"]');
@@ -59,6 +60,20 @@ const submitForm = async e => {
 const showResponse = async(data) => {
     console.log(data);
 };
+
+
+const validateForm = () => {
+    if (!form.email.value || !form.password.value) {
+        console.error('Please fill in both email and password fields.');
+        return false;
+    }
+
+    if (form.password.value.length <= 4) {
+        console.error('Password should be more than 4 characters.');
+        return false;
+    }
+    return true;
+}
 
 
 inputFields.forEach(field => {
