@@ -41,9 +41,6 @@ const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
 
 
-//const existingForm = document.querySelector('form');
-
-
 form.addEventListener('submit', e => {
     e.preventDefault();
 
