@@ -1,3 +1,5 @@
+const formData = new FormData();
+
 const createNewElement = (tag) => {
     return document.createElement(tag);
 };
@@ -24,6 +26,41 @@ const inputFields = [
 ];
 
 
+const submitForm = async e => {
+    e.preventDefault();
+
+
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+
+
+    formData.append('email', emailInput.value);
+    formData.append('password', passwordInput.value);
+
+
+    try {
+        const response = await fetch('https://httpbin.org/post', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            await showResponse(data.form);
+        } else {
+            console.error('Failed to send the request.');
+        }
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
+}
+
+
+const showResponse = async(data) => {
+    console.log(data);
+};
+
+
 inputFields.forEach(field => {
     const input = createNewElement('input');
     setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
@@ -41,14 +78,4 @@ const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
 
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-
-
-    const emailInput = form.querySelector('input[name="email"]');
-    const passwordInput = form.querySelector('input[name="password"]');
-
-
-    console.log('Email:', emailInput.value);
-    console.log('Password:', passwordInput.value);
-});
+form.addEventListener('submit', submitForm);
