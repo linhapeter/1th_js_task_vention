@@ -46,7 +46,7 @@ const submitForm = async e => {
 
         if (response.ok) {
             const data = await response.json();
-            await showResponse(data.form);
+            await addElementsWithOutputContent(data.form);
         } else {
             console.error('Failed to send the request.');
         }
@@ -56,9 +56,15 @@ const submitForm = async e => {
 }
 
 
-const showResponse = async(data) => {
-    console.log(data);
-};
+const addElementsWithOutputContent = async(data) => {
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            const keyValueElement = createNewElement('div');
+            keyValueElement.textContent = `${key}: ${data[key]}`;
+            rootDiv.appendChild(keyValueElement);
+        }
+    }
+}
 
 
 inputFields.forEach(field => {
