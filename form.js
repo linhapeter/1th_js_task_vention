@@ -1,3 +1,5 @@
+const formData = new FormData();
+
 const createNewElement = (tag) => {
     return document.createElement(tag);
 };
@@ -24,6 +26,51 @@ const inputFields = [
 ];
 
 
+const submitForm = async e => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+
+
+    formData.append('email', emailInput.value);
+    formData.append('password', passwordInput.value);
+
+
+    try {
+        const response = await fetch('https://httpbin.org/post', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        showResponse(data.form);
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
+}
+
+
+const showResponse = (data) => {
+    console.log(data);
+};
+
+
+const validateForm = () => {
+    if (!form.email.value || !form.password.value) {
+        console.error('Please fill in both email and password fields.');
+        return false;
+    }
+
+    if (form.password.value.length <= 4) {
+        console.error('Password should be more than 4 characters.');
+        return false;
+    }
+    return true;
+}
+
+
 inputFields.forEach(field => {
     const input = createNewElement('input');
     setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
@@ -38,4 +85,7 @@ appendChildToParent(form, submitButton);
 
 
 const rootDiv = document.getElementById('root');
-appendChildToParent(rootDiv, form);
+rootDiv.appendChild(form);
+
+
+form.addEventListener('submit', submitForm);
