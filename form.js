@@ -43,26 +43,20 @@ const submitForm = async e => {
             method: 'POST',
             body: formData
         });
-
-        if (response.ok) {
-            const data = await response.json();
-            await addElementsWithOutputContent(data.form);
-        } else {
-            console.error('Failed to send the request.');
-        }
+        const data = await response.json();
+        addElementsWithOutputContent(data.form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
 }
 
 
-const addElementsWithOutputContent = async(data) => {
+const addElementsWithOutputContent = (data) => {
     for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-            const keyValueElement = createNewElement('div');
-            keyValueElement.textContent = `${key}: ${data[key]}`;
-            rootDiv.appendChild(keyValueElement);
-        }
+        const keyValueElement = createNewElement('div');
+        setAttributesForElement(keyValueElement, { class: 'temp' })
+        keyValueElement.textContent = `${key}: ${data[key]}`;
+        rootDiv.appendChild(keyValueElement);
     }
 }
 
