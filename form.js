@@ -43,20 +43,15 @@ const submitForm = async e => {
             method: 'POST',
             body: formData
         });
-
-        if (response.ok) {
-            const data = await response.json();
-            await showResponse(data.form);
-        } else {
-            console.error('Failed to send the request.');
-        }
+        const data = await response.json();
+        showResponse(data.form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
 }
 
 
-const showResponse = async(data) => {
+const showResponse = (data) => {
     console.log(data);
 };
 
