@@ -34,6 +34,8 @@ const submitForm = async e => {
     const passwordInput = form.querySelector('input[name="password"]');
 
 
+    formData.delete('email', emailInput.value);
+    formData.delete('password', passwordInput.value);
     formData.append('email', emailInput.value);
     formData.append('password', passwordInput.value);
 
@@ -52,6 +54,7 @@ const submitForm = async e => {
 
 
 const addElementsWithOutputContent = (data) => {
+    deleteElementAccordingToClass('temp');
     for (const key in data) {
         const keyValueElement = createNewElement('div');
         setAttributesForElement(keyValueElement, { class: 'temp' })
@@ -59,6 +62,12 @@ const addElementsWithOutputContent = (data) => {
         rootDiv.appendChild(keyValueElement);
     }
 }
+
+
+const deleteElementAccordingToClass = (className) => {
+    const elements = Array.from(document.getElementsByClassName(className));
+    elements.forEach(element => element.remove());
+};
 
 
 inputFields.forEach(field => {
