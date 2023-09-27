@@ -2,19 +2,19 @@ const formData = new FormData();
 
 
 const createNewElement = (tag) => {
-  return document.createElement(tag);
+    return document.createElement(tag);
 };
 
 
 const setAttributesForElement = (element, attributes = {}) => {
-  for (const key in attributes) {
-    element.setAttribute(key, attributes[key]);
-  }
+    for (const key in attributes) {
+        element.setAttribute(key, attributes[key]);
+    }
 };
 
 
 const appendChildToParent = (parent, child) => {
-  parent.appendChild(child);
+    parent.appendChild(child);
 };
 
 
@@ -22,34 +22,33 @@ const form = createNewElement('form');
 
 
 const inputFields = [
-  { type: 'email', name: 'email', placeholder: 'Email' },
-  { type: 'password', name: 'password', placeholder: 'Password' },
+    { type: 'email', name: 'email', placeholder: 'Email' },
+    { type: 'password', name: 'password', placeholder: 'Password' },
 ];
 
 
-const submitForm = async (e) => {
-  e.preventDefault();
+const submitForm = async(e) => {
+    e.preventDefault();
 
-  
-  const emailInput = form.querySelector('input[name="email"]');
-  const passwordInput = form.querySelector('input[name="password"]');
 
-  
-  formData.append('email', emailInput.value);
-  formData.append('password', passwordInput.value);
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
 
- 
-  try {
-      const response = await fetch('https://httpbin.org/post', {
-          method: 'POST',
-          body: formData
-      });
-      const data = await response.json();
-      showResponse(data.form);
-  } 
-  catch (error) {
-     console.error('An error occurred:', error);
-  }
+
+    formData.append('email', emailInput.value);
+    formData.append('password', passwordInput.value);
+
+
+    try {
+        const response = await fetch('https://httpbin.org/post', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        showResponse(data.form);
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
 }
 
 
@@ -58,19 +57,14 @@ const showResponse = (data) => {
 };
 
 
-const showResponse = async (data) => {
-  console.log(data);
-};
-
-
 inputFields.forEach((field) => {
-  const input = createNewElement('input');
-  setAttributesForElement(input, {
-    type: field.type,
-    name: field.name,
-    placeholder: field.placeholder,
-  });
-  appendChildToParent(form, input);
+    const input = createNewElement('input');
+    setAttributesForElement(input, {
+        type: field.type,
+        name: field.name,
+        placeholder: field.placeholder,
+    });
+    appendChildToParent(form, input);
 });
 
 
