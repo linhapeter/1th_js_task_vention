@@ -28,7 +28,7 @@ const inputFields = [
 
 const submitForm = async e => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm(form.email.value, form.password.value)) return;
 
 
     const emailInput = form.querySelector('input[name="email"]');
@@ -55,29 +55,22 @@ const submitForm = async e => {
 
 
 const addElementsWithOutputContent = (data) => {
-    deleteElementAccordingToClass('temp');
+    dataContainer.innerHTML = '';
     for (const key in data) {
         const keyValueElement = createNewElement('div');
-        setAttributesForElement(keyValueElement, { class: 'temp' })
         keyValueElement.textContent = `${key}: ${data[key]}`;
-        rootDiv.appendChild(keyValueElement);
+        dataContainer.appendChild(keyValueElement);
     }
 }
 
 
-const deleteElementAccordingToClass = (className) => {
-    const elements = Array.from(document.getElementsByClassName(className));
-    elements.forEach(element => element.remove());
-};
-
-
-const validateForm = () => {
-    if (!form.email.value || !form.password.value) {
+const validateForm = (email, password) => {
+    if (!email || !password) {
         console.error('Please fill in both email and password fields.');
         return false;
     }
 
-    if (form.password.value.length <= 4) {
+    if (password.length <= 4) {
         console.error('Password should be more than 4 characters.');
         return false;
     }
@@ -100,6 +93,10 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+
+const dataContainer = createNewElement('div');
+rootDiv.appendChild(dataContainer);
 
 
 form.addEventListener('submit', submitForm);
