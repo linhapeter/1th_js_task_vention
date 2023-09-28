@@ -55,20 +55,13 @@ const submitForm = async e => {
 
 
 const addElementsWithOutputContent = (data) => {
-    deleteElementAccordingToClass('temp');
+    dataContainer.innerHTML = '';
     for (const key in data) {
         const keyValueElement = createNewElement('div');
-        setAttributesForElement(keyValueElement, { class: 'temp' })
         keyValueElement.textContent = `${key}: ${data[key]}`;
-        rootDiv.appendChild(keyValueElement);
+        dataContainer.appendChild(keyValueElement);
     }
 }
-
-
-const deleteElementAccordingToClass = (className) => {
-    const elements = Array.from(document.getElementsByClassName(className));
-    elements.forEach(element => element.remove());
-};
 
 
 const validateForm = () => {
@@ -100,6 +93,10 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+
+const dataContainer = createNewElement('div');
+rootDiv.appendChild(dataContainer);
 
 
 form.addEventListener('submit', submitForm);
