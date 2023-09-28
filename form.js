@@ -1,5 +1,3 @@
-const formData = new FormData();
-
 const createNewElement = (tag) => {
     return document.createElement(tag);
 };
@@ -17,15 +15,6 @@ const appendChildToParent = (parent, child) => {
 };
 
 
-const form = createNewElement('form');
-
-
-const inputFields = [
-    { type: 'email', name: 'email', placeholder: 'Email' },
-    { type: 'password', name: 'password', placeholder: 'Password' }
-];
-
-
 const submitForm = async e => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -41,12 +30,16 @@ const submitForm = async e => {
     formData.append('password', passwordInput.value);
 
 
+    loadingMessage.style.display = 'block';
+
+
     try {
         const response = await fetch('https://httpbin.org/post', {
             method: 'POST',
             body: formData
         });
         const data = await response.json();
+        loadingMessage.style.display = 'none';
         addElementsWithOutputContent(data.form);
     } catch (error) {
         console.error('An error occurred:', error);
@@ -85,6 +78,18 @@ const validateForm = () => {
 }
 
 
+const formData = new FormData();
+
+
+const form = createNewElement('form');
+
+
+const inputFields = [
+    { type: 'email', name: 'email', placeholder: 'Email' },
+    { type: 'password', name: 'password', placeholder: 'Password' }
+];
+
+
 inputFields.forEach(field => {
     const input = createNewElement('input');
     setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
@@ -100,6 +105,12 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+
+const loadingMessage = createNewElement('div');
+loadingMessage.textContent = 'Processing...';
+loadingMessage.style.display = 'none';
+appendChildToParent(form, loadingMessage);
 
 
 form.addEventListener('submit', submitForm);
