@@ -29,12 +29,15 @@ const inputFields = [
 
 const submitForm = async(e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
 
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
 
 
+    formData.delete('email', emailInput.value);
+    formData.delete('password', passwordInput.value);
     formData.append('email', emailInput.value);
     formData.append('password', passwordInput.value);
 
@@ -45,19 +48,45 @@ const submitForm = async(e) => {
             body: formData
         });
         const data = await response.json();
-        showResponse(data.form);
+        addElementsWithOutputContent(data.form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
 }
 
 
-const showResponse = (data) => {
-    console.log(data);
+const addElementsWithOutputContent = (data) => {
+    deleteElementAccordingToClass('temp');
+    for (const key in data) {
+        const keyValueElement = createNewElement('div');
+        setAttributesForElement(keyValueElement, { class: 'temp' })
+        keyValueElement.textContent = `${key}: ${data[key]}`;
+        rootDiv.appendChild(keyValueElement);
+    }
+}
+
+
+const deleteElementAccordingToClass = (className) => {
+    const elements = Array.from(document.getElementsByClassName(className));
+    elements.forEach(element => element.remove());
 };
 
 
-inputFields.forEach((field) => {
+const validateForm = () => {
+    if (!form.email.value || !form.password.value) {
+        console.error('Please fill in both email and password fields.');
+        return false;
+    }
+
+    if (form.password.value.length <= 4) {
+        console.error('Password should be more than 4 characters.');
+        return false;
+    }
+    return true;
+}
+
+
+inputFields.forEach(field => {
     const input = createNewElement('input');
     setAttributesForElement(input, {
         type: field.type,
