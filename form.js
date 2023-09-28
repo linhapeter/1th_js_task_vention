@@ -49,6 +49,7 @@ const submitForm = async(e) => {
         });
         const data = await response.json();
         addElementsWithOutputContent(data.form);
+        clearInputState(form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
@@ -85,6 +86,43 @@ const validateForm = () => {
     return true;
 }
 
+const saveInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+
+
+    localStorage.setItem('savedEmail', emailInput.value);
+    localStorage.setItem('savedPassword', passwordInput.value);
+};
+
+
+const loadInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+    const savedEmail = localStorage.getItem('savedEmail');
+    const savedPassword = localStorage.getItem('savedPassword');
+
+
+    if (savedEmail !== null) {
+        emailInput.value = savedEmail;
+    }
+
+    if (savedPassword !== null) {
+        passwordInput.value = savedPassword;
+    }
+};
+
+
+const clearInputState = (form) => {
+    form.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+
+    localStorage.removeItem('savedEmail');
+    localStorage.removeItem('savedPassword');
+};
+
 
 inputFields.forEach(field => {
     const input = createNewElement('input');
@@ -105,6 +143,14 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+
+document.addEventListener('DOMContentLoaded', loadInputState);
+
+
+form.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', saveInputState);
+});
 
 
 form.addEventListener('submit', submitForm);
