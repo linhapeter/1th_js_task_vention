@@ -1,19 +1,6 @@
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm } from './helpers.js';
+
 const formData = new FormData();
-
-
-const createNewElement = (tag) => {
-    return document.createElement(tag);
-};
-
-const setAttributesForElement = (element, attributes = {}) => {
-    for (const key in attributes) {
-        element.setAttribute(key, attributes[key]);
-    }
-};
-
-const appendChildToParent = (parent, child) => {
-    parent.appendChild(child);
-};
 
 const form = createNewElement('form');
 
