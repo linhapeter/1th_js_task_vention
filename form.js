@@ -29,9 +29,7 @@ const submitForm = async e => {
     formData.append('email', emailInput.value);
     formData.append('password', passwordInput.value);
 
-
-    loadingMessage.style.display = 'block';
-
+    createLoadingMsg();
 
     try {
         const response = await fetch('https://httpbin.org/post', {
@@ -39,8 +37,11 @@ const submitForm = async e => {
             body: formData
         });
         const data = await response.json();
-        loadingMessage.style.display = 'none';
+
+        removeLoadingMsg();
+
         addElementsWithOutputContent(data.form);
+
     } catch (error) {
         console.error('An error occurred:', error);
     }
@@ -70,6 +71,14 @@ const validateForm = (email, password) => {
     return true;
 }
 
+const removeLoadingMsg = () => document.getElementById('loadingMsg').remove();
+
+const createLoadingMsg = () => {
+    const loadingMessage = createNewElement('div');
+    setAttributesForElement(loadingMessage, { id: 'loadingMsg' });
+    loadingMessage.textContent = 'Processing...';
+    appendChildToParent(form, loadingMessage);
+}
 
 const formData = new FormData();
 
@@ -101,11 +110,5 @@ rootDiv.appendChild(form);
 
 const dataContainer = createNewElement('div');
 rootDiv.appendChild(dataContainer);
-
-const loadingMessage = createNewElement('div');
-loadingMessage.textContent = 'Processing...';
-loadingMessage.style.display = 'none';
-appendChildToParent(form, loadingMessage);
-
 
 form.addEventListener('submit', submitForm);
