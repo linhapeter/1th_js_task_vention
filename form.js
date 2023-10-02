@@ -1,18 +1,6 @@
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm } from './helpers.js';
+
 const formData = new FormData();
-
-const createNewElement = (tag) => {
-    return document.createElement(tag);
-};
-
-const setAttributesForElement = (element, attributes = {}) => {
-    for (const key in attributes) {
-        element.setAttribute(key, attributes[key]);
-    }
-};
-
-const appendChildToParent = (parent, child) => {
-    parent.appendChild(child);
-};
 
 const form = createNewElement('form');
 
@@ -52,19 +40,6 @@ const addElementsWithOutputContent = (data) => {
         keyValueElement.textContent = `${key}: ${data[key]}`;
         dataContainer.appendChild(keyValueElement);
     }
-}
-
-const validateForm = (email, password) => {
-    if (!email || !password) {
-        console.error('Please fill in both email and password fields.');
-        return false;
-    }
-
-    if (password.length <= 4) {
-        console.error('Password should be more than 4 characters.');
-        return false;
-    }
-    return true;
 }
 
 inputFields.forEach(field => {
