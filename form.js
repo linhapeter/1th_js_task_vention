@@ -1,4 +1,4 @@
-const formData = new FormData();
+import axios from 'axios';
 
 const createNewElement = (tag) => {
     return document.createElement(tag);
@@ -21,29 +21,29 @@ const inputFields = [
     { type: 'password', name: 'password', placeholder: 'Password' }
 ];
 
-const submitForm = async e => {
+const submitForm = async(e) => {
+    console.log("4864684");
     e.preventDefault();
+
     if (!validateForm(form.email.value, form.password.value)) return;
 
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
 
-    formData.delete('email', emailInput.value);
-    formData.delete('password', passwordInput.value);
-    formData.append('email', emailInput.value);
-    formData.append('password', passwordInput.value);
+    const requestData = {
+        email: emailInput.value,
+        password: passwordInput.value,
+    };
 
     try {
-        const response = await fetch('https://httpbin.org/post', {
-            method: 'POST',
-            body: formData
-        });
-        const data = await response.json();
-        addElementsWithOutputContent(data.form);
+        const response = await axios.post('https://httpbin.org/post', requestData);
+        const data = response.data;
+        console.log(data.json);
+        addElementsWithOutputContent(data.json);
     } catch (error) {
         console.error('An error occurred:', error);
     }
-}
+};
 
 const addElementsWithOutputContent = (data) => {
     dataContainer.innerHTML = '';
