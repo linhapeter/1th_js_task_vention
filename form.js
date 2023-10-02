@@ -73,15 +73,13 @@ const saveInputState = () => {
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
 
-    saveInputValue(Keys.savedEmail, emailInput.value);
-    saveInputValue(Keys.savedPassword, passwordInput.value);
+    saveInputValue(emailInput.value, passwordInput.value);
 };
 
 const loadInputState = () => {
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
-    const savedEmail = loadInputValue(Keys.savedEmail);
-    const savedPassword = loadInputValue(Keys.savedPassword);
+    const { savedEmail, savedPassword } = loadInputValues();
 
     if (savedEmail !== null) {
         emailInput.value = savedEmail;
@@ -97,21 +95,23 @@ const clearInputState = (form) => {
         input.value = '';
     });
 
-
-    deleteInputValue(Keys.savedEmail);
-    deleteInputValue(Keys.savedPassword);
+    deleteInputValue();
 };
 
-const saveInputValue = (key, value) => {
-    localStorage.setItem(key, value);
+const saveInputValue = (email, password) => {
+    localStorage.setItem(Keys.savedEmail, email);
+    localStorage.setItem(Keys.savedPassword, password);
 }
 
-const loadInputValue = (key) => {
-    return localStorage.getItem(key);
-}
+const loadInputValues = () => {
+    const savedEmail = localStorage.getItem(Keys.savedEmail);
+    const savedPassword = localStorage.getItem(Keys.savedPassword);
+    return { savedEmail, savedPassword };
+};
 
-const deleteInputValue = (key) => {
-    localStorage.removeItem(key);
+const deleteInputValue = () => {
+    localStorage.removeItem(Keys.savedEmail);
+    localStorage.removeItem(Keys.savedPassword);
 }
 
 inputFields.forEach(field => {
