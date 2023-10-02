@@ -1,12 +1,11 @@
-import { createNewElement, setAttributesForElement, appendChildToParent, validateForm } from './helpers.js';
-
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
 const formData = new FormData();
 
 const form = createNewElement('form');
 
 const inputFields = [
     { type: 'email', name: 'email', placeholder: 'Email' },
-    { type: 'password', name: 'password', placeholder: 'Password' }
+    { type: 'password', name: 'password', placeholder: 'Password' },
 ];
 
 const submitForm = async e => {
@@ -28,6 +27,7 @@ const submitForm = async e => {
         });
         const data = await response.json();
         addElementsWithOutputContent(data.form);
+        clearInputState(form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
@@ -42,9 +42,42 @@ const addElementsWithOutputContent = (data) => {
     }
 }
 
+const saveInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+
+    saveInputValue(emailInput.value, passwordInput.value);
+};
+
+const loadInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+    const { savedEmail, savedPassword } = loadInputValues();
+
+    if (savedEmail !== null) {
+        emailInput.value = savedEmail;
+    }
+
+    if (savedPassword !== null) {
+        passwordInput.value = savedPassword;
+    }
+};
+
+const clearInputState = (form) => {
+    form.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+    deleteInputValue();
+};
+
 inputFields.forEach(field => {
     const input = createNewElement('input');
-    setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
+    setAttributesForElement(input, {
+        type: field.type,
+        name: field.name,
+        placeholder: field.placeholder,
+    });
     appendChildToParent(form, input);
 });
 
@@ -55,6 +88,12 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+document.addEventListener('DOMContentLoaded', loadInputState);
+
+form.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', saveInputState);
+});
 
 const dataContainer = createNewElement('div');
 rootDiv.appendChild(dataContainer);
