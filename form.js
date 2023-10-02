@@ -83,18 +83,16 @@ const saveInputState = () => {
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
 
-
-    localStorage.setItem('savedEmail', emailInput.value);
-    localStorage.setItem('savedPassword', passwordInput.value);
+    saveInputValue(Keys.savedEmail, emailInput.value);
+    saveInputValue(Keys.savedPassword, passwordInput.value);
 };
 
 
 const loadInputState = () => {
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
-    const savedEmail = localStorage.getItem('savedEmail');
-    const savedPassword = localStorage.getItem('savedPassword');
-
+    const savedEmail = loadInputValue(Keys.savedEmail);
+    const savedPassword = loadInputValue(Keys.savedPassword);
 
     if (savedEmail !== null) {
         emailInput.value = savedEmail;
@@ -112,9 +110,21 @@ const clearInputState = (form) => {
     });
 
 
-    localStorage.removeItem('savedEmail');
-    localStorage.removeItem('savedPassword');
+    deleteInputValue(Keys.savedEmail);
+    deleteInputValue(Keys.savedPassword);
 };
+
+const saveInputValue = (key, value) => {
+    localStorage.setItem(key, value);
+}
+
+const loadInputValue = (key) => {
+    return localStorage.getItem(key);
+}
+
+const deleteInputValue = (key) => {
+    localStorage.removeItem(key);
+}
 
 
 inputFields.forEach(field => {
@@ -137,8 +147,20 @@ appendChildToParent(form, submitButton);
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
 
+const Keys = {
+    savedEmail: 'savedEmail',
+    savedPassword: 'savedPassword',
+}
+
+document.addEventListener('DOMContentLoaded', loadInputState);
+
+
+form.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', saveInputState);
+});
 
 const dataContainer = createNewElement('div');
 rootDiv.appendChild(dataContainer);
+
 
 form.addEventListener('submit', submitForm);
