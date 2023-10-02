@@ -1,5 +1,4 @@
-import { createNewElement, setAttributesForElement, appendChildToParent, validateForm } from './helpers.js';
-
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
 const formData = new FormData();
 
 const form = createNewElement('form');
@@ -43,19 +42,6 @@ const addElementsWithOutputContent = (data) => {
     }
 }
 
-const validateForm = (email, password) => {
-    if (!email || !password) {
-        console.error('Please fill in both email and password fields.');
-        return false;
-    }
-
-    if (password.length <= 4) {
-        console.error('Password should be more than 4 characters.');
-        return false;
-    }
-    return true;
-}
-
 const saveInputState = () => {
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
@@ -85,22 +71,6 @@ const clearInputState = (form) => {
     deleteInputValue();
 };
 
-const saveInputValue = (email, password) => {
-    localStorage.setItem(Keys.savedEmail, email);
-    localStorage.setItem(Keys.savedPassword, password);
-}
-
-const loadInputValues = () => {
-    const savedEmail = localStorage.getItem(Keys.savedEmail);
-    const savedPassword = localStorage.getItem(Keys.savedPassword);
-    return { savedEmail, savedPassword };
-};
-
-const deleteInputValue = () => {
-    localStorage.removeItem(Keys.savedEmail);
-    localStorage.removeItem(Keys.savedPassword);
-}
-
 inputFields.forEach(field => {
     const input = createNewElement('input');
     setAttributesForElement(input, {
@@ -118,11 +88,6 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
-
-const Keys = {
-    savedEmail: 'savedEmail',
-    savedPassword: 'savedPassword',
-}
 
 document.addEventListener('DOMContentLoaded', loadInputState);
 
