@@ -1,24 +1,12 @@
 import axios from 'axios';
-
-const createNewElement = (tag) => {
-    return document.createElement(tag);
-};
-
-const setAttributesForElement = (element, attributes = {}) => {
-    for (const key in attributes) {
-        element.setAttribute(key, attributes[key]);
-    }
-};
-
-const appendChildToParent = (parent, child) => {
-    parent.appendChild(child);
-};
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
+const formData = new FormData();
 
 const form = createNewElement('form');
 
 const inputFields = [
     { type: 'email', name: 'email', placeholder: 'Email' },
-    { type: 'password', name: 'password', placeholder: 'Password' }
+    { type: 'password', name: 'password', placeholder: 'Password' },
 ];
 
 const submitForm = async(e) => {
@@ -40,6 +28,7 @@ const submitForm = async(e) => {
         const data = response.data;
         console.log(data.json);
         addElementsWithOutputContent(data.json);
+        clearInputState(form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
@@ -54,22 +43,42 @@ const addElementsWithOutputContent = (data) => {
     }
 }
 
-const validateForm = (email, password) => {
-    if (!email || !password) {
-        console.error('Please fill in both email and password fields.');
-        return false;
+const saveInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+
+    saveInputValue(emailInput.value, passwordInput.value);
+};
+
+const loadInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+    const { savedEmail, savedPassword } = loadInputValues();
+
+    if (savedEmail !== null) {
+        emailInput.value = savedEmail;
     }
 
-    if (password.length <= 4) {
-        console.error('Password should be more than 4 characters.');
-        return false;
+    if (savedPassword !== null) {
+        passwordInput.value = savedPassword;
     }
-    return true;
-}
+};
+
+const clearInputState = (form) => {
+    form.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+    deleteInputValue();
+};
 
 inputFields.forEach(field => {
     const input = createNewElement('input');
-    setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
+    setAttributesForElement(input, {
+        type: field.type,
+        name: field.name,
+        placeholder: field.placeholder,
+    });
     appendChildToParent(form, input);
 });
 
@@ -80,6 +89,12 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+document.addEventListener('DOMContentLoaded', loadInputState);
+
+form.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', saveInputState);
+});
 
 const dataContainer = createNewElement('div');
 rootDiv.appendChild(dataContainer);
