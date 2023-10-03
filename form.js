@@ -1,16 +1,4 @@
-const createNewElement = (tag) => {
-    return document.createElement(tag);
-};
-
-const setAttributesForElement = (element, attributes = {}) => {
-    for (const key in attributes) {
-        element.setAttribute(key, attributes[key]);
-    }
-};
-
-const appendChildToParent = (parent, child) => {
-    parent.appendChild(child);
-};
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
 
 const submitForm = async e => {
     e.preventDefault();
@@ -36,7 +24,7 @@ const submitForm = async e => {
         removeLoadingMsg();
 
         addElementsWithOutputContent(data.form);
-
+        clearInputState(form);
     } catch (error) {
         console.error('An error occurred:', error);
     }
@@ -51,18 +39,34 @@ const addElementsWithOutputContent = (data) => {
     }
 }
 
-const validateForm = (email, password) => {
-    if (!email || !password) {
-        console.error('Please fill in both email and password fields.');
-        return false;
+const saveInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+
+    saveInputValue(emailInput.value, passwordInput.value);
+};
+
+const loadInputState = () => {
+    const emailInput = form.querySelector('input[name="email"]');
+    const passwordInput = form.querySelector('input[name="password"]');
+    const { savedEmail, savedPassword } = loadInputValues();
+
+    if (savedEmail !== null) {
+        emailInput.value = savedEmail;
     }
 
-    if (password.length <= 4) {
-        console.error('Password should be more than 4 characters.');
-        return false;
+    if (savedPassword !== null) {
+        passwordInput.value = savedPassword;
     }
-    return true;
-}
+};
+
+const clearInputState = (form) => {
+    form.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+    deleteInputValue();
+};
 
 const removeLoadingMsg = () => document.getElementById('loadingMsg').remove();
 
@@ -84,7 +88,11 @@ const inputFields = [
 
 inputFields.forEach(field => {
     const input = createNewElement('input');
-    setAttributesForElement(input, { type: field.type, name: field.name, placeholder: field.placeholder });
+    setAttributesForElement(input, {
+        type: field.type,
+        name: field.name,
+        placeholder: field.placeholder,
+    });
     appendChildToParent(form, input);
 });
 
@@ -95,6 +103,12 @@ appendChildToParent(form, submitButton);
 
 const rootDiv = document.getElementById('root');
 rootDiv.appendChild(form);
+
+document.addEventListener('DOMContentLoaded', loadInputState);
+
+form.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', saveInputState);
+});
 
 const dataContainer = createNewElement('div');
 rootDiv.appendChild(dataContainer);
