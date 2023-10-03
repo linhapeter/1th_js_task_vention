@@ -1,12 +1,4 @@
-import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
-const formData = new FormData();
-
-const form = createNewElement('form');
-
-const inputFields = [
-    { type: 'email', name: 'email', placeholder: 'Email' },
-    { type: 'password', name: 'password', placeholder: 'Password' },
-];
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue, createLoadingMsg, removeLoadingMsg } from './helpers.js';
 
 const submitForm = async e => {
     e.preventDefault();
@@ -20,12 +12,17 @@ const submitForm = async e => {
     formData.append('email', emailInput.value);
     formData.append('password', passwordInput.value);
 
+    createLoadingMsg(form);
+
     try {
         const response = await fetch('https://httpbin.org/post', {
             method: 'POST',
             body: formData
         });
         const data = await response.json();
+
+        removeLoadingMsg();
+
         addElementsWithOutputContent(data.form);
         clearInputState(form);
     } catch (error) {
@@ -70,6 +67,15 @@ const clearInputState = (form) => {
 
     deleteInputValue();
 };
+
+const formData = new FormData();
+
+const form = createNewElement('form');
+
+const inputFields = [
+    { type: 'email', name: 'email', placeholder: 'Email' },
+    { type: 'password', name: 'password', placeholder: 'Password' }
+];
 
 inputFields.forEach(field => {
     const input = createNewElement('input');
