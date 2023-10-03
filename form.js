@@ -1,4 +1,4 @@
-import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
+import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue, createLoadingMsg, removeLoadingMsg } from './helpers.js';
 
 const submitForm = async e => {
     e.preventDefault();
@@ -12,7 +12,7 @@ const submitForm = async e => {
     formData.append('email', emailInput.value);
     formData.append('password', passwordInput.value);
 
-    createLoadingMsg();
+    createLoadingMsg(form);
 
     try {
         const response = await fetch('https://httpbin.org/post', {
@@ -67,15 +67,6 @@ const clearInputState = (form) => {
 
     deleteInputValue();
 };
-
-const removeLoadingMsg = () => document.getElementById('loadingMsg').remove();
-
-const createLoadingMsg = () => {
-    const loadingMessage = createNewElement('div');
-    setAttributesForElement(loadingMessage, { id: 'loadingMsg' });
-    loadingMessage.textContent = 'Processing...';
-    appendChildToParent(form, loadingMessage);
-}
 
 const formData = new FormData();
 
