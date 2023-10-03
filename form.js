@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue } from './helpers.js';
-const formData = new FormData();
+import { apiPost } from './api.js';
 
 const form = createNewElement('form');
 
@@ -10,7 +9,6 @@ const inputFields = [
 ];
 
 const submitForm = async(e) => {
-    console.log("4864684");
     e.preventDefault();
 
     if (!validateForm(form.email.value, form.password.value)) return;
@@ -24,9 +22,7 @@ const submitForm = async(e) => {
     };
 
     try {
-        const response = await axios.post('https://httpbin.org/post', requestData);
-        const data = response.data;
-        console.log(data.json);
+        const data = await apiPost(requestData);
         addElementsWithOutputContent(data.json);
         clearInputState(form);
     } catch (error) {
