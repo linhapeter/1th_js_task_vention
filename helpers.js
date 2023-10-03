@@ -45,3 +45,12 @@ export const deleteInputValue = () => {
   localStorage.removeItem(Keys.savedEmail)
   localStorage.removeItem(Keys.savedPassword)
 }
+
+export const removeLoadingMsg = () => document.getElementById('loadingMsg').remove();
+
+export const createLoadingMsg = (form) => {
+    const loadingMessage = createNewElement('div');
+    setAttributesForElement(loadingMessage, { id: 'loadingMsg' });
+    loadingMessage.textContent = 'Processing...';
+    appendChildToParent(form, loadingMessage);
+}
