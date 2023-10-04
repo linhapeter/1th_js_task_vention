@@ -1,0 +1,17 @@
+**/*{.,-}min.js
+**/*.sh
+coverage/**
+dist/*
+images/*
+node_modules/*
+node_modules*/*
+assets/*
+docs/*
+**/*.config.js
+**/*.bundle.js
+deploy.js
+zip.js
+flow-typed/*
+.serverless
+build
+libs
