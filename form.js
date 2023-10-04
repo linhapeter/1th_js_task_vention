@@ -6,34 +6,32 @@ import {
   saveInputValue,
   loadInputValues,
   deleteInputValue,
-  createLoadingMsg,
   removeLoadingMsg,
+  createLoadingMsg,
 } from "./helpers.js";
+import { apiPost } from "./api.js";
 
 const submitForm = async (e) => {
   e.preventDefault();
+
   if (!validateForm(form.email.value, form.password.value)) return;
 
   const emailInput = form.querySelector('input[name="email"]');
   const passwordInput = form.querySelector('input[name="password"]');
 
-  formData.delete("email", emailInput.value);
-  formData.delete("password", passwordInput.value);
-  formData.append("email", emailInput.value);
-  formData.append("password", passwordInput.value);
+  const requestData = {
+    email: emailInput.value,
+    password: passwordInput.value,
+  };
 
   createLoadingMsg(form);
 
   try {
-    const response = await fetch("https://httpbin.org/post", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json();
+    const data = await apiPost(requestData);
 
     removeLoadingMsg();
 
-    addElementsWithOutputContent(data.form);
+    addElementsWithOutputContent(data.json);
     clearInputState(form);
   } catch (error) {
     console.error("An error occurred:", error);
@@ -77,8 +75,6 @@ const clearInputState = (form) => {
 
   deleteInputValue();
 };
-
-const formData = new FormData();
 
 const form = createNewElement("form");
 
