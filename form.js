@@ -1,43 +1,51 @@
-import { createNewElement, setAttributesForElement, appendChildToParent, validateForm, saveInputValue, loadInputValues, deleteInputValue, createLoadingMsg, removeLoadingMsg } from './helpers.js';
+import {
+  createNewElement,
+  setAttributesForElement,
+  appendChildToParent,
+  validateForm,
+  saveInputValue,
+  loadInputValues,
+  deleteInputValue,
+  removeLoadingMsg,
+  createLoadingMsg,
+} from "./helpers.js";
+import { apiPost } from "./api.js";
 
-const submitForm = async e => {
+const submitForm = async (e) => {
   e.preventDefault();
+
   if (!validateForm(form.email.value, form.password.value)) return;
 
   const emailInput = form.querySelector('input[name="email"]');
   const passwordInput = form.querySelector('input[name="password"]');
 
-  formData.delete('email', emailInput.value);
-  formData.delete('password', passwordInput.value);
-  formData.append('email', emailInput.value);
-  formData.append('password', passwordInput.value);
+  const requestData = {
+    email: emailInput.value,
+    password: passwordInput.value,
+  };
 
   createLoadingMsg(form);
 
   try {
-    const response = await fetch('https://httpbin.org/post', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await response.json();
+    const data = await apiPost(requestData);
 
     removeLoadingMsg();
 
-    addElementsWithOutputContent(data.form);
+    addElementsWithOutputContent(data.json);
     clearInputState(form);
   } catch (error) {
-    console.error('An error occurred:', error);
+    console.error("An error occurred:", error);
   }
-}
+};
 
 const addElementsWithOutputContent = (data) => {
-  dataContainer.innerHTML = '';
+  dataContainer.innerHTML = "";
   for (const key in data) {
-    const keyValueElement = createNewElement('div');
+    const keyValueElement = createNewElement("div");
     keyValueElement.textContent = `${key}: ${data[key]}`;
     dataContainer.appendChild(keyValueElement);
   }
-}
+};
 
 const saveInputState = () => {
   const emailInput = form.querySelector('input[name="email"]');
@@ -61,8 +69,8 @@ const loadInputState = () => {
 };
 
 const clearInputState = (form) => {
-  form.querySelectorAll('input').forEach(input => {
-    input.value = '';
+  form.querySelectorAll("input").forEach((input) => {
+    input.value = "";
   });
 
   deleteInputValue();
@@ -70,15 +78,15 @@ const clearInputState = (form) => {
 
 const formData = new FormData();
 
-const form = createNewElement('form');
+const form = createNewElement("form");
 
 const inputFields = [
-  { type: 'email', name: 'email', placeholder: 'Email' },
-  { type: 'password', name: 'password', placeholder: 'Password' }
+  { type: "email", name: "email", placeholder: "Email" },
+  { type: "password", name: "password", placeholder: "Password" },
 ];
 
-inputFields.forEach(field => {
-  const input = createNewElement('input');
+inputFields.forEach((field) => {
+  const input = createNewElement("input");
   setAttributesForElement(input, {
     type: field.type,
     name: field.name,
@@ -87,21 +95,21 @@ inputFields.forEach(field => {
   appendChildToParent(form, input);
 });
 
-const submitButton = createNewElement('button');
-setAttributesForElement(submitButton, { type: 'submit' });
-submitButton.textContent = 'Submit';
+const submitButton = createNewElement("button");
+setAttributesForElement(submitButton, { type: "submit" });
+submitButton.textContent = "Submit";
 appendChildToParent(form, submitButton);
 
-const rootDiv = document.getElementById('root');
+const rootDiv = document.getElementById("root");
 rootDiv.appendChild(form);
 
-document.addEventListener('DOMContentLoaded', loadInputState);
+document.addEventListener("DOMContentLoaded", loadInputState);
 
-form.querySelectorAll('input').forEach(input => {
-  input.addEventListener('input', saveInputState);
+form.querySelectorAll("input").forEach((input) => {
+  input.addEventListener("input", saveInputState);
 });
 
-const dataContainer = createNewElement('div');
+const dataContainer = createNewElement("div");
 rootDiv.appendChild(dataContainer);
 
-form.addEventListener('submit', submitForm);
+form.addEventListener("submit", submitForm);
