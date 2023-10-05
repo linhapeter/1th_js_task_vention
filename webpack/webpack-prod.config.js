@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: './form.js',
   output: {
     filename: 'bundle.js',
@@ -15,5 +15,8 @@ module.exports = {
         loader: 'babel-loader'
       }
     }]
+  },
+  optimization: {
+    minimize: true
   }
 };
